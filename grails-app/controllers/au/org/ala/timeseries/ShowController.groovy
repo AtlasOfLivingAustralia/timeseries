@@ -10,7 +10,7 @@ class ShowController {
 
     private def initPolygonMap(){
 
-        def file = new File("/data/polygons/new/all-sorted.csv")
+        def file = new File("/data/timeseries/config/polygons.csv")
         def groupLookup = getGroupLookup()
         def counter = 0
         def polygonsLoaded = 0
@@ -70,7 +70,7 @@ class ShowController {
         }
 
         def js = new JsonSlurper()
-        def classification = js.parseText(new URL("http://bie.ala.org.au/ws/classification/"+family).getText())
+        def classification = js.parseText(new URL("http://bie.ala.org.au/ws/classification/" + family).getText())
         //find the order
         classification.each { node ->
            def lookup = groupLookup.get((node.rank +":" + node.scientificName).toLowerCase())

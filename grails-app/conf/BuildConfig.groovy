@@ -34,7 +34,7 @@ grails.project.dependency.resolution = {
     plugins {
         build(":release:3.0.1", ":rest-client-builder:2.0.3") {
             export = false
-        }        
+        }
         build ":tomcat:7.0.55"
         compile ':cache:1.1.8'
         runtime ":ala-bootstrap3:1.0-SNAPSHOT"

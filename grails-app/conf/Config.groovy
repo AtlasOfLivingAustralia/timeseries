@@ -1,17 +1,27 @@
-// locations to search for config files that get merged into the main config;
-// config files can be ConfigSlurper scripts, Java properties files, or classes
-// in the classpath in ConfigSlurper format
+/******************************************************************************\
+ *  CONFIG MANAGEMENT
+ \******************************************************************************/
+def appName = 'timeseries'
+def ENV_NAME = "${appName.toUpperCase()}_CONFIG"
+default_config = "/data/${appName}/config/${appName}-config.properties"
+if(!grails.config.locations || !(grails.config.locations instanceof List)) {
+    grails.config.locations = []
+}
+if(System.getenv(ENV_NAME) && new File(System.getenv(ENV_NAME)).exists()) {
+    println "[${appName}] Including configuration file specified in environment: " + System.getenv(ENV_NAME);
+    grails.config.locations.add "file:" + System.getenv(ENV_NAME)
+} else if(System.getProperty(ENV_NAME) && new File(System.getProperty(ENV_NAME)).exists()) {
+    println "[${appName}] Including configuration file specified on command line: " + System.getProperty(ENV_NAME);
+    grails.config.locations.add "file:" + System.getProperty(ENV_NAME)
+} else if(new File(default_config).exists()) {
+    println "[${appName}] Including default configuration file: " + default_config;
+    grails.config.locations.add "file:" + default_config
+} else {
+    println "[${appName}] No external configuration file defined."
+}
+println "[${appName}] (*) grails.config.locations = ${grails.config.locations}"
 
-// grails.config.locations = [ "classpath:${appName}-config.properties",
-//                             "classpath:${appName}-config.groovy",
-//                             "file:${userHome}/.grails/${appName}-config.properties",
-//                             "file:${userHome}/.grails/${appName}-config.groovy"]
-
-// if (System.properties["${appName}.config.location"]) {
-//    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
-// }
-
-grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
+grails.project.groupId = 'au.org.ala' // change this to alter the default package name and Maven publishing destination
 
 // The ACCEPT header will not be used for content negotiation for user agents containing the following strings (defaults to the 4 major rendering engines)
 grails.mime.disable.accept.header.userAgents = ['Gecko', 'WebKit', 'Presto', 'Trident']
