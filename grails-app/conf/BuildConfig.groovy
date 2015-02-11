@@ -5,8 +5,6 @@ grails.project.test.reports.dir = "target/test-reports"
 grails.project.work.dir = "target/work"
 grails.project.target.level = 1.6
 grails.project.source.level = 1.6
-//grails.project.war.file = "target/${appName}-${appVersion}.war"
-//grails.plugin.location.'ala-bootstrap3' = "../ala-bootstrap3"
 
 grails.project.fork = [
         test: false,
@@ -31,13 +29,13 @@ grails.project.dependency.resolution = {
         }
     }
 
-    dependencies {
-    }
+    dependencies {}
 
     plugins {
-        // plugins for the build system only
+        build(":release:3.0.1", ":rest-client-builder:2.0.3") {
+            export = false
+        }        
         build ":tomcat:7.0.55"
-        // plugins for the compile step
         compile ':cache:1.1.8'
         runtime ":ala-bootstrap3:1.0-SNAPSHOT"
     }
