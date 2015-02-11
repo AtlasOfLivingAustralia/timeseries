@@ -8,6 +8,14 @@ class ShowController {
     static Map nameMap = [:]
     static Map polygonMap = [:]
 
+    /**
+     * Load the polygons from the data file, partitioning by
+     * species groups
+     * species
+     * year
+     *
+     * @return
+     */
     private def initPolygonMap(){
 
         def file = new File("/data/timeseries/config/polygons.csv")

@@ -26,7 +26,9 @@ html, body {
     overflow: auto;
     /*overflow-scrolling: auto;*/
 }
-.species-list li .scientificName { font-size:12px; line-height: 0.8em; }
+.species-list li .mainName { font-size:15px; line-height: 0.8em; }
+.species-list li .secondName { font-size:12px; line-height: 0.8em; }
+
 .species-list li { line-height:20px; }
 
 #main { padding-top: 0px; }
@@ -47,18 +49,16 @@ html, body {
     height: auto;
     position:absolute;
     top:3%;
-    right:7%;
+    right:8%;
     margin-right:-50px;
     margin-top:-10px;
-    pointer-events:none;
-
 }
 
 #startStopButtons {
-    margin-left:50px;
-    position:absolute;
-    top:1%;
-    left:5%;
+    /*margin-left:50px;*/
+    /*position:absolute;*/
+    /*top:1%;*/
+    /*left:5%;*/
 }
 #taxonInfo h2 { font-size: 18px; }
 #taxonInfo img { max-height: 150px; max-width: 200px;

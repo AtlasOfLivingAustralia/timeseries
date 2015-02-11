@@ -22,40 +22,71 @@
 
 <body>
 
-
-<div id="wrapper" style="height:700px;">
+<div class="row" style="height:700px;">
 
 	<!-- Sidebar -->
-	<div id="sidebar-wrapper" class="col-md-3">
+	<div id="sidebar-wrapper" class="col-md-3 hidden-sm hidden-xs">
 		<h2 class="heading-large" id="main-heading">Species time series</h2>
-		<div class="quick-search hide">
-			<form class="form-inline">
-				<input type="text" class="form-control" placeholder="Text input">
-				<button type="submit" class="btn">Search</button>
-			</form>
-		</div>
 	</div>
 	<!-- /#sidebar-wrapper -->
 
 	<!-- Page Content -->
-	<div id="page-content-wrapper"  class="col-md-9">
-		<div id="map" style="width:100%; height:700px;"> </div>
-		<div id="taxonInfo" class="hide">
-			<a class="speciesPageLink" href="">
-			<h2 class="commonName"></h2>
-			<h3 class="scientificName"></h3>
-			<img src=""/>
-			</a>
-			<br/>
-			<div id="yearTicker">
-				<span id="currentYear"></span>
+	<div id="page-content-wrapperXXX" class="col-md-9">
+
+		<div class="visible-sm visible-xs" style="margin-top: 30px; margin-left: 10px; margin-bottom:20px;">
+			<label>Select bird: </label>
+			<select id="taxon-select" class="form-control">
+			</select>
+		</div>
+
+		<div>
+			<div id="map" style="width:100%; height:700px;"> </div>
+			<div id="taxonInfo" class="hide">
+				<a class="speciesPageLink" href="">
+				<h2 class="commonName"></h2>
+				<h3 class="scientificName"></h3>
+				<img src=""/>
+				</a>
+				<br/>
+				<div id="yearTicker">
+					<span id="currentYear"></span>
+				</div>
+
+				<div id="startStopButtons" >
+					<a href="#" class="btn btn-default start">Start</a>
+					<a href="#" class="btn btn-default stop">Stop</a>
+				</div>
 			</div>
 		</div>
 
-		<div id="startStopButtons">
-			%{--<a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>--}%
-			<a href="#" class="btn btn-default start">Start</a>
-			<a href="#" class="btn btn-default stop">Stop</a>
+		<div id="getStarted" style="
+		padding: 10px;
+		background-color: #FCFCFC;
+		/*border: 1px solid black;*/
+		width: auto;
+		/*opacity: 0.7;*/
+		/*filter: alpha(opacity=70);*/
+		background-color:rgba(252,252,252,0.7);
+		height: auto;
+		position:absolute;
+		top:20%;
+		width:50%;
+		right:25%;
+		margin-right:-30px;
+		margin-top:-10px;
+		">
+			<h2>Bird distributions</h2>
+			<p>
+				This is a simple tool for exploring bird distributions through the decades.
+				<br/>
+				To use this, select a bird group e.g. Doves, and then bird from the left hand side menu,
+				or click one of the examples below:
+				<ul>
+					<li><a href="javascript:loadByName('Laughing Kookaburra');">Laughing Kookaburra</a></li>
+					<li><a href="javascript:loadByName('Gang-gang Cockatoo');">Gang-gang Cockatoo</a></li>
+					<li><a href="javascript:loadByName('Calyptorhynchus (Zanda) latirostris');">Carnaby's Black-cockatoo</a></li>
+				</ul>
+			</p>
 		</div>
 	</div>
 	<!-- /#page-content-wrapper -->
@@ -87,7 +118,6 @@
 
 	var taxa = [];
 
-
 	function loadNames() {
 		$.get("show/names", function (data) {
 			$.each(data, function (groupName, group) {
@@ -99,12 +129,15 @@
 
 					var nameToDisplay = "";
 					if (taxon.commonName) {
-						nameToDisplay = "<span class='commonName mainName'>" + taxon.commonName + "</span><br/><span class='scientificName'>" + taxon.scientificName + "</span>"
+						nameToDisplay = "<span class='commonName mainName'>" + taxon.commonName + "</span><br/><span class='secondName scientificName'>" + taxon.scientificName + "</span>"
 					} else {
 						nameToDisplay = "<span class='scientificName mainName'>" + taxon.scientificName + "</span>"
 					}
 
 					$group.append('<li><a href="javascript:loadTaxon(' + idx + ');">' + nameToDisplay + '</a></li>');
+
+
+					$('#taxon-select').append('<option value="' + idx + '">' + taxon.commonName + " " + taxon.scientificName + '</option>');
 				});
 
 				var $spGroup = $('<div class="speciesGroup">')
@@ -123,6 +156,8 @@
 	}
 
 	function loadTaxon(taxonIdx) {
+
+		$('#getStarted').addClass('hide');
 
 		stopTransitions();
 
@@ -154,10 +189,11 @@
 			})
 
 			$('#taxonInfo').removeClass('hide')
+			//$('#startStopButtons').removeClass('hide')
 			$('#taxonInfo').find('.scientificName').html(POLY_TRANS.taxon.scientificName);
 			$('#taxonInfo').find('.commonName').html(POLY_TRANS.taxon.commonName);
 			$('#taxonInfo').find('img').attr('src', POLY_TRANS.taxon.image);
-			$('#taxonInfo').find('speciesPageLink').attr('href', "http://bie.ala.org.au/species/" + POLY_TRANS.taxon.guid);
+			$('#taxonInfo').find('.speciesPageLink').attr('href', "http://bie.ala.org.au/species/" + POLY_TRANS.taxon.guid);
 
 			startTransitions();
 		});
@@ -219,9 +255,22 @@
 		stopTransitions();
 	});
 
+	$('#taxon-select').change(function () {
+		var idx = $('#taxon-select').val();
+		loadTaxon(idx);
+	});
 
 	//initialise
 	loadNames();
+
+	function loadByName(name){
+		$.each(POLY_TRANS.taxa, function(idx, taxon){
+			if(taxon.commonName == name || taxon.scientificName == name ||  taxon.guid == name ){
+				loadTaxon(idx);
+				return;
+			}
+		});
+	}
 
 </r:script>
 
