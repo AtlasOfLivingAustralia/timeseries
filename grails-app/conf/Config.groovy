@@ -72,6 +72,7 @@ grails {
     }
 }
 
+//grails.resources.adhoc.patterns = ['/images/*', '/css/*', '/js/*', '/plugins/*']
 
 grails.converters.encoding = "UTF-8"
 // scaffolding templates configuration
