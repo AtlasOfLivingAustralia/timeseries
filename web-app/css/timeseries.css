@@ -1,0 +1,71 @@
+html, body {
+    height: 100%;
+}
+
+#sidebar-wrapper { overflow-scrolling: auto; }
+.speciesGroup { padding-left:15px; }
+.speciesGroup h4 { padding-bottom:0; }
+
+
+
+/*#sidebar-wrapper h1 {color: #999999; font-size:24px; margin-left:10px; margin-bottom:20px;}*/
+/*#sidebar-wrapper h4 { margin-left:15px;  }*/
+/*#sidebar-wrapper h4 a { }*/
+/*ul.species-list li { font-weight: bold; color: #FFF; font-size:10px; margin-left:5px; padding-left:0px;*/
+/*text-indent: 0px;*/
+/*line-height: 20px;*/
+/*margin-bottom: 5px;*/
+/*}*/
+
+
+.species-list {
+    font-size:12px; line-height: 20px;
+    max-height: 30em;
+    height: 300px;
+    /*position: relative;*/
+    overflow: auto;
+    /*overflow-scrolling: auto;*/
+}
+.species-list li .scientificName { font-size:12px; line-height: 0.8em; }
+.species-list li { line-height:20px; }
+
+#main { padding-top: 0px; }
+.quick-search { margin-left:15px; margin-top:15px; margin-bottom: 25px;}
+.scientificName { font-style: italic;}
+.mainName {font-size:15px; }
+
+#taxonInfo .scientificName { margin-top: 5px; }
+#taxonInfo .commonName .mainName { margin-top: 5px; font-size:14px;}
+#taxonInfo {
+    padding: 10px;
+    background-color: #FCFCFC;
+    /*border: 1px solid black;*/
+    width: auto;
+    /*opacity: 0.7;*/
+    /*filter: alpha(opacity=70);*/
+    background-color:rgba(252,252,252,0.7);
+    height: auto;
+    position:absolute;
+    top:3%;
+    right:7%;
+    margin-right:-50px;
+    margin-top:-10px;
+    pointer-events:none;
+
+}
+
+#startStopButtons {
+    margin-left:50px;
+    position:absolute;
+    top:1%;
+    left:5%;
+}
+#taxonInfo h2 { font-size: 18px; }
+#taxonInfo img { max-height: 150px; max-width: 200px;
+    opacity: 1;
+    filter: alpha(opacity=100);}
+#currentYear {font-size: 36px; }
+#yearTicker { padding-top: 10px;}
+
+
+#main-heading { margin-top: 0px; margin-left:15px;}
