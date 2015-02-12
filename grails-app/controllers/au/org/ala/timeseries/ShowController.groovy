@@ -120,8 +120,18 @@ class ShowController {
                 resp.each {
                     content << [scientificName: it.name, commonName: it.commonNameSingle, image: it.smallImageUrl, guid: it.guid]
                 }
-
-                namesForDisplay.put(group, content)
+                //sort the names by common name then sci name where common name not available
+                namesForDisplay.put(group, content.sort { taxon1, taxon2 ->
+                    if(!taxon1.commonName && taxon2.commonName){
+                        1
+                    } else if(taxon1.commonName && !taxon2.commonName){
+                        -1
+                    } else if(taxon1.commonName && taxon2.commonName) {
+                        taxon1.commonName.compareToIgnoreCase(taxon2.commonName)
+                    } else {
+                        taxon1.scientificName.compareToIgnoreCase(taxon2.scientificName)
+                    }
+                })
             }
         }
         render namesForDisplay as JSON

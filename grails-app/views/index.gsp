@@ -123,6 +123,9 @@
 			$.each(data, function (groupName, group) {
 
 				var $group = $('<ul class="species-list">');
+				var $optGroup = $('<optgroup label="'+ groupName +'">');
+				$('#taxon-select').append($optGroup);
+
 				$.each(group, function (idx, taxon) {
 
 					var idx = POLY_TRANS.taxa.push(taxon) - 1;
@@ -136,8 +139,12 @@
 
 					$group.append('<li><a href="javascript:loadTaxon(' + idx + ');">' + nameToDisplay + '</a></li>');
 
+					var selectDisplayName =  taxon.scientificName;
+					if(taxon.commonName != null){
+						selectDisplayName =  taxon.commonName + " - " + taxon.scientificName;
+					}
 
-					$('#taxon-select').append('<option value="' + idx + '">' + taxon.commonName + " " + taxon.scientificName + '</option>');
+					$optGroup.append('<option value="' + idx + '">' + selectDisplayName + '</option>');
 				});
 
 				var $spGroup = $('<div class="speciesGroup">')
