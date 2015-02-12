@@ -41,8 +41,9 @@ grails.mime.types = [ // the first one is the default format
     xml:           ['text/xml', 'application/xml']
 ]
 
-
-skin.fluidLayout = true
+if(!skin.fluidLayout){
+  skin.fluidLayout = true
+}
 
 // URL Mapping Cache Max Size, defaults to 5000
 //grails.urlmapping.cache.maxsize = 1000

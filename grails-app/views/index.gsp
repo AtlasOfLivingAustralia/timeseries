@@ -26,7 +26,7 @@
 
 	<!-- Sidebar -->
 	<div id="sidebar-wrapper" class="col-md-3 hidden-sm hidden-xs">
-		<h2 class="heading-large" id="main-heading">Species time series</h2>
+		<h2 class="heading-large" id="main-heading">Bird time series</h2>
 	</div>
 	<!-- /#sidebar-wrapper -->
 
@@ -78,8 +78,9 @@
 			<h2>Bird distributions</h2>
 			<p>
 				This is a simple tool for exploring bird distributions through the decades.
+				These distributions have been derived from occurrence data accessible in the Atlas.
 				<br/>
-				To use this, select a bird group e.g. Doves, and then bird from the left hand side menu,
+				To use this tool, select a bird group e.g. Doves, and then a bird from the left hand side menu,
 				or click one of the examples below:
 				<ul>
 					<li><a href="javascript:loadByName('Laughing Kookaburra');">Laughing Kookaburra</a></li>
