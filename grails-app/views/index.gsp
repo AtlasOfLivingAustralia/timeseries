@@ -52,29 +52,28 @@
 					<span id="currentYear"></span>
 				</div>
 
-				<div id="startStopButtons" >
+				<div id="startStopButtons" style="margin-top:10px;">
 					<a href="#" class="btn btn-default start">Start</a>
 					<a href="#" class="btn btn-default stop">Stop</a>
+					<p style="padding-top:10px;">
+						<select id="temporalPeriod" class="form-control">
+							<option value="1">By month</option>
+							<option value="0">By decade</option>
+						</select>
+					</p>
+					<p style="padding-top:5px;">
+						<select id="timeInterval" class="form-control">
+							<option value="1000">1 second interval</option>
+							<option value="2000">2 seconds  interval</option>
+							<option value="5000">5 second  interval</option>
+							<option value="10000">10 second interval</option>
+						</select>
+					</p>
 				</div>
 			</div>
 		</div>
 
-		<div id="getStarted" style="
-		padding: 10px;
-		background-color: #FCFCFC;
-		/*border: 1px solid black;*/
-		width: auto;
-		/*opacity: 0.7;*/
-		/*filter: alpha(opacity=70);*/
-		background-color:rgba(252,252,252,0.7);
-		height: auto;
-		position:absolute;
-		top:20%;
-		width:50%;
-		right:25%;
-		margin-right:-30px;
-		margin-top:-10px;
-		">
+		<div id="getStarted">
 			<h2>Bird distributions</h2>
 			<p>
 				This is a simple tool for exploring bird distributions through the decades.
@@ -94,17 +93,24 @@
 </div>
 
 <r:script>
+
+	var POLY_TRANS_YEAR = 0;
+	var POLY_TRANS_MONTH = 1;
+
 	var POLY_TRANS = {
 		map: L.map('map').setView([-26.1, 133.9], 4),
 		polygonsMap: {},
-		loadedYears: [],
+		loadedTemporalPeriods: [],
 		polygonsLoaded: false,
 		currentLoadedPolygons: [],
 		polygonTransitionsRunning: false,
-		currentYearIdx: 0,
+		currentTemporalIdx: 0,
+		temporalType: POLY_TRANS_MONTH,
 		taxon: "",
+		taxonIdx: 0,
 		taxa: [],
-		timer: null
+		timer: null,
+		timeInterval: 1000
 	}
 
 	L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
@@ -124,7 +130,7 @@
 			$.each(data, function (groupName, group) {
 
 				var $group = $('<ul class="species-list">');
-				var $optGroup = $('<optgroup label="'+ groupName +'">');
+				var $optGroup = $('<optgroup label="' + groupName + '">');
 				$('#taxon-select').append($optGroup);
 
 				$.each(group, function (idx, taxon) {
@@ -140,9 +146,9 @@
 
 					$group.append('<li><a href="javascript:loadTaxon(' + idx + ');">' + nameToDisplay + '</a></li>');
 
-					var selectDisplayName =  taxon.scientificName;
-					if(taxon.commonName != null){
-						selectDisplayName =  taxon.commonName + " - " + taxon.scientificName;
+					var selectDisplayName = taxon.scientificName;
+					if (taxon.commonName != null) {
+						selectDisplayName = taxon.commonName + " - " + taxon.scientificName;
 					}
 
 					$optGroup.append('<option value="' + idx + '">' + selectDisplayName + '</option>');
@@ -168,7 +174,7 @@
 		$('#getStarted').addClass('hide');
 
 		stopTransitions();
-
+		POLY_TRANS.taxonIdx = taxonIdx
 		POLY_TRANS.taxon = POLY_TRANS.taxa[taxonIdx];
 		console.log("loading : " + POLY_TRANS.taxon.scientificName);
 		POLY_TRANS.polygonTransitionsRunning = false;
@@ -180,24 +186,30 @@
 		}
 
 		POLY_TRANS.polygonsMap = {};
-		POLY_TRANS.loadedYears = [];
+		POLY_TRANS.loadedTemporalPeriods = [];
 		POLY_TRANS.polygonsLoaded = false;
 		POLY_TRANS.currentLoadedPolygons = [];
-		POLY_TRANS.currentYearIdx = 0;
+		POLY_TRANS.currentTemporalIdx = 0;
 		POLY_TRANS.polygonTransitionsRunning = true;
 
-		$.get("show/getByName?sciName=" + encodeURIComponent(POLY_TRANS.taxon.scientificName), function (data) {
-			$.each(data, function (year, polygons) {
-				POLY_TRANS.polygonsMap[year] = [];
-				POLY_TRANS.loadedYears.push(year);
+		var methodUrl = "getByNameYear";
+		if(POLY_TRANS.temporalType == POLY_TRANS_MONTH){
+			methodUrl = "getByNameMonth";
+		}
+
+		console.log("show/" + methodUrl + "?sciName=" + encodeURIComponent(POLY_TRANS.taxon.scientificName));
+
+		$.get("show/" + methodUrl + "?sciName=" + encodeURIComponent(POLY_TRANS.taxon.scientificName), function (data) {
+			$.each(data, function (period, polygons) {
+				POLY_TRANS.polygonsMap[period] = [];
+				POLY_TRANS.loadedTemporalPeriods.push(period);
 				$.each(polygons, function (idx, polygon) {
-					POLY_TRANS.polygonsMap[year].push(omnivore.wkt.parse(polygon));
+					POLY_TRANS.polygonsMap[period].push(omnivore.wkt.parse(polygon));
 				});
 				POLY_TRANS.polygonsLoaded = true
 			})
 
 			$('#taxonInfo').removeClass('hide')
-			//$('#startStopButtons').removeClass('hide')
 			$('#taxonInfo').find('.scientificName').html(POLY_TRANS.taxon.scientificName);
 			$('#taxonInfo').find('.commonName').html(POLY_TRANS.taxon.commonName);
 			$('#taxonInfo').find('img').attr('src', POLY_TRANS.taxon.image);
@@ -207,24 +219,30 @@
 		});
 	}
 
-	function loadNextYear() {
+	function loadNextPeriod() {
 
-		if (POLY_TRANS.currentYearIdx + 1 < POLY_TRANS.loadedYears.length) {
-			POLY_TRANS.currentYearIdx++;
+		if (POLY_TRANS.currentTemporalIdx + 1 < POLY_TRANS.loadedTemporalPeriods.length) {
+			POLY_TRANS.currentTemporalIdx++;
 		} else {
-			POLY_TRANS.currentYearIdx = 0;
+			POLY_TRANS.currentTemporalIdx = 0;
 		}
 
-		var theYear = POLY_TRANS.loadedYears[POLY_TRANS.currentYearIdx];
+		var theTemporalPeriod= POLY_TRANS.loadedTemporalPeriods[POLY_TRANS.currentTemporalIdx];
 
-		var range = parseInt(theYear) + 9;
+		var temporalDisplay = "";
 
-		var currentYear = new Date().getFullYear()
-		if (range > currentYear) {
-			range = currentYear;
+		if (POLY_TRANS.temporalType == POLY_TRANS_MONTH) {
+			temporalDisplay = theTemporalPeriod;
+		} else {
+			var range = parseInt(theTemporalPeriod) + 9;
+			var currentYear = new Date().getFullYear()
+			if (range > currentYear) {
+				range = currentYear;
+			}
+			temporalDisplay = theTemporalPeriod + " - " + range
 		}
 
-		$('#currentYear').html(theYear + " - " + range);
+		$('#currentYear').html(temporalDisplay);
 
 		//remove from map
 		$.each(POLY_TRANS.currentLoadedPolygons, function (idx, polygonToRemove) {
@@ -235,7 +253,7 @@
 
 		//add new
 		//console.log('Polygons to load: ' + POLY_TRANS.polygonsMap[theYear].length);
-		$.each(POLY_TRANS.polygonsMap[theYear], function (idx, polygon) {
+		$.each(POLY_TRANS.polygonsMap[theTemporalPeriod], function (idx, polygon) {
 			polygon.addTo(POLY_TRANS.map);
 			POLY_TRANS.currentLoadedPolygons.push(polygon);
 		});
@@ -244,8 +262,8 @@
 	function startTransitions() {
 		if (POLY_TRANS.timer !== null) return;
 		POLY_TRANS.timer = setInterval(function () {
-			loadNextYear();
-		}, 1000);
+			loadNextPeriod();
+		}, POLY_TRANS.timeInterval);
 	}
 
 	function stopTransitions() {
@@ -268,12 +286,26 @@
 		loadTaxon(idx);
 	});
 
+	$('#temporalPeriod').change(function () {
+		stopTransitions();
+		var temporalPeriod = parseInt($('#temporalPeriod').val());
+		POLY_TRANS.currentTemporalIdx = 0;
+		POLY_TRANS.temporalType = temporalPeriod;
+		loadTaxon(POLY_TRANS.taxonIdx);
+	});
+
+	$('#timeInterval').change(function () {
+		stopTransitions();
+		POLY_TRANS.timeInterval = parseInt($('#timeInterval').val());
+		startTransitions();
+	});
+
 	//initialise
 	loadNames();
 
-	function loadByName(name){
-		$.each(POLY_TRANS.taxa, function(idx, taxon){
-			if(taxon.commonName == name || taxon.scientificName == name ||  taxon.guid == name ){
+	function loadByName(name) {
+		$.each(POLY_TRANS.taxa, function (idx, taxon) {
+			if (taxon.commonName == name || taxon.scientificName == name || taxon.guid == name) {
 				loadTaxon(idx);
 				return;
 			}

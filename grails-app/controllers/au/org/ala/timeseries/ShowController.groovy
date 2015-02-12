@@ -6,7 +6,8 @@ import groovy.json.JsonSlurper
 class ShowController {
 
     static Map nameMap = [:]
-    static Map polygonMap = [:]
+    static Map polygonYearMap = [:]
+    static Map polygonMonthMap = [:]
 
     /**
      * Load the polygons from the data file, partitioning by
@@ -16,9 +17,11 @@ class ShowController {
      *
      * @return
      */
-    private def initPolygonMap(){
+    private def initPolygonMap(polygonMap, fileName){
 
-        def file = new File("/data/timeseries/config/polygons.csv")
+        nameMap = [:]
+
+        def file = new File(fileName)
         def groupLookup = getGroupLookup()
         def counter = 0
         def polygonsLoaded = 0
@@ -31,11 +34,11 @@ class ShowController {
 
             if (isSpeciesOrSubspecies(sciName)) {
 
-                def year = parts[1]
+                def temporalPeriod = parts[1]
                 def polygons = parts[2].split("\\|")
                 def areas = parts[3].split("\\|")
 
-                log.debug("Loading ${sciName} ${year}")
+                log.debug("Loading ${sciName} ${temporalPeriod}")
 
                 def groupName = getSpeciesGroup(groupLookup, family)
 
@@ -54,7 +57,7 @@ class ShowController {
                         polygonsForSciName = [:]
                         polygonMap.put(sciName, polygonsForSciName)
                     }
-                    polygonsForSciName.put(year, polygons)
+                    polygonsForSciName.put(temporalPeriod, polygons)
                     counter++
                     polygonsLoaded += polygons.size()
                 }
@@ -63,6 +66,19 @@ class ShowController {
 
         //for name map, lookup taxa
         log.info("Loaded ${polygonMap.keySet().size()} families, ${polygonsLoaded} polygons, ${counter} years")
+    }
+
+    /**
+     * Load the polygons from the data file, partitioning by
+     * species groups
+     * species
+     * year
+     *
+     * @return
+     */
+    private def initPolygonMaps(){
+        initPolygonMap(polygonMonthMap, "/data/timeseries/config/months.csv")
+        initPolygonMap(polygonYearMap, "/data/timeseries/config/years.csv")
     }
 
     def static groupCache = [:]
@@ -107,8 +123,8 @@ class ShowController {
     def names(){
 
         if(!namesForDisplay) {
-            if (!polygonMap) {
-                initPolygonMap()
+            if (!polygonYearMap) {
+                initPolygonMaps()
             }
             nameMap.keySet().each { group ->
                 def names = nameMap.get(group)
@@ -137,13 +153,30 @@ class ShowController {
         render namesForDisplay as JSON
     }
 
-    def getByName(){
-        if(!polygonMap){
-            initPolygonMap()
+    def getByNameYear(){
+        if(!polygonYearMap){
+            initPolygonMaps()
         }
-        def polygons = polygonMap.get(params.sciName)
+        def polygons = polygonYearMap.get(params.sciName)
         render polygons as JSON
     }
+
+    def getByNameMonth(){
+        if(!polygonMonthMap){
+            initPolygonMaps()
+        }
+        def polygons = polygonMonthMap.get(params.sciName)
+        def months = polygons.keySet().sort { it.toInteger() }
+        def sortedPolygons = [:]
+        months.each { month ->
+            sortedPolygons.put(monthsLookup[month.toInteger()-1], polygons.get(month))
+        }
+        render sortedPolygons as JSON
+    }
+
+    def monthsLookup = [
+            "January","February","March","April","May","June","July","August","September","October", "November", "December"
+    ]
 
     def postJsonElements(String url, String jsonBody) {
         HttpURLConnection conn = null
@@ -157,10 +190,7 @@ class ShowController {
             wr.flush()
             def resp = conn.inputStream.text
             log.debug "fileid = ${conn.getHeaderField("fileId")}"
-            //log.debug "resp = ${resp}"
-            //log.debug "code = ${conn.getResponseCode()}"
             if (!resp && conn.getResponseCode() == 201) {
-                // Field guide code...
                 log.debug "field guide catch"
                 resp = "{fileId: \"${conn.getHeaderField("fileId")}\" }"
             }
