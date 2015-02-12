@@ -17,7 +17,30 @@
 	<link href="http://leafletjs.com/dist/leaflet.css" rel="stylesheet"/>
 	<script src="http://leafletjs.com/dist/leaflet.js"></script>
 	<script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-omnivore/v0.2.0/leaflet-omnivore.min.js'></script>
+	<script src='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.2/Leaflet.fullscreen.min.js'></script>
+	<link href='//api.tiles.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v0.0.2/leaflet.fullscreen.css' rel='stylesheet' />
 	<r:require modules="timeseries"/>
+
+	<style type="text/css">
+		.leaflet-control-command-interior
+		{
+			width: 20px;
+			height: 20px;
+			background-position: 50% 50%;
+			background-repeat: no-repeat;
+			display: block;
+			padding: 3px;
+			border-radius: 4px;
+			-webkit-border-radius: 4px;
+			-moz-border-radius: 4px;
+			box-shadow: 0 1px 7px rgba(0, 0, 0, 0.65);
+			cursor: auto;
+			text-align: center;
+			background-color: #FFFFFF;
+		}
+
+	</style>
+
 </head>
 
 <body>
@@ -41,36 +64,7 @@
 
 		<div>
 			<div id="map" style="width:100%; height:700px;"> </div>
-			<div id="taxonInfo" class="hide">
-				<a class="speciesPageLink" href="">
-				<h2 class="commonName"></h2>
-				<h3 class="scientificName"></h3>
-				<img src=""/>
-				</a>
-				<br/>
-				<div id="yearTicker">
-					<span id="currentYear"></span>
-				</div>
 
-				<div id="startStopButtons" style="margin-top:10px;">
-					<a href="#" class="btn btn-default start">Start</a>
-					<a href="#" class="btn btn-default stop">Stop</a>
-					<p style="padding-top:10px;">
-						<select id="temporalPeriod" class="form-control">
-							<option value="1">By month</option>
-							<option value="0">By decade</option>
-						</select>
-					</p>
-					<p style="padding-top:5px;">
-						<select id="timeInterval" class="form-control">
-							<option value="1000">1 second interval</option>
-							<option value="2000">2 seconds  interval</option>
-							<option value="5000">5 second  interval</option>
-							<option value="10000">10 second interval</option>
-						</select>
-					</p>
-				</div>
-			</div>
 		</div>
 
 		<div id="getStarted">
@@ -92,13 +86,47 @@
 	<!-- /#page-content-wrapper -->
 </div>
 
+
+<div id="taxonInfoTemplate" class="hide">
+	<a class="speciesPageLink" href="">
+		<h2 class="commonName"></h2>
+		<h3 class="scientificName"></h3>
+		<img src=""/>
+	</a>
+	<br/>
+	<div class="yearTicker">
+		<span id="currentYear"></span>
+	</div>
+
+	<div class="startStopButtons" style="margin-top:10px;">
+		<a href="#" class="btn btn-default start">Start</a>
+		<a href="#" class="btn btn-default stop">Stop</a>
+		<p style="padding-top:10px;">
+			<select id="temporalPeriod" class="form-control">
+				<option value="1">By month</option>
+				<option value="0">By decade</option>
+			</select>
+		</p>
+		<p style="padding-top:5px;">
+			<select id="timeInterval" class="form-control">
+				<option value="1000">1 second interval</option>
+				<option value="2000">2 seconds  interval</option>
+				<option value="5000">5 second  interval</option>
+				<option value="10000">10 second interval</option>
+			</select>
+		</p>
+	</div>
+</div>
+
+
+
 <r:script>
 
 	var POLY_TRANS_YEAR = 0;
 	var POLY_TRANS_MONTH = 1;
 
 	var POLY_TRANS = {
-		map: L.map('map').setView([-26.1, 133.9], 4),
+		map: L.map('map', { fullscreenControl: true }).setView([-26.1, 133.9], 4),
 		polygonsMap: {},
 		loadedTemporalPeriods: [],
 		polygonsLoaded: false,
@@ -121,7 +149,26 @@
 		id: 'examples.map-i875mjb7'
 	}).addTo(POLY_TRANS.map);
 
-	var popup = L.popup();
+	L.Control.TaxonInfo = L.Control.extend({
+		options: {
+			position: 'topright'
+		},
+		onAdd: function (map) {
+			var controlDiv = L.DomUtil.create('div', 'taxon-info-control');
+			L.DomEvent
+					.addListener(controlDiv, 'click', L.DomEvent.stopPropagation)
+					.addListener(controlDiv, 'click', L.DomEvent.preventDefault)
+					.addListener(controlDiv, 'click', function () { MapShowCommand(); });
+			return controlDiv;
+		}
+	});
+
+	POLY_TRANS.map.addControl(new L.Control.TaxonInfo());
+
+	var taxonInfo = $('#taxonInfoTemplate').clone();
+	taxonInfo.attr('id', 'taxonInfo');
+    $('.taxon-info-control').append(taxonInfo);
+
 
 	var taxa = [];
 

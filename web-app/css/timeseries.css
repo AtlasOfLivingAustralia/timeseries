@@ -50,8 +50,8 @@ html, body {
     position:absolute;
     top:14%;
     right:8%;
-    margin-right:-50px;
-    margin-top:-10px;
+    margin-right:10px;
+    margin-top:10px;
 }
 
 #taxonInfo h2 { font-size: 18px; }
