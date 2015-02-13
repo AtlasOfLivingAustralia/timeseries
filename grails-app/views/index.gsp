@@ -55,20 +55,23 @@
 			<div id="map" style="width:100%; height:700px;"> </div>
 		</div>
 
-		<div id="getStarted">
-			<h2>Bird distributions</h2>
-			<p>
-				This is a simple tool for exploring bird distributions through the decades.
-				These distributions have been derived from occurrence data accessible in the Atlas.
-				<br/>
-				To use this tool, select a bird group e.g. Doves, and then a bird from the left hand side menu,
-				or click one of the examples below:
-				<ul>
-					<li><a href="javascript:loadByName('Laughing Kookaburra');">Laughing Kookaburra</a></li>
-					<li><a href="javascript:loadByName('Gang-gang Cockatoo');">Gang-gang Cockatoo</a></li>
-					<li><a href="javascript:loadByName('Calyptorhynchus (Zanda) latirostris');">Carnaby's Black-cockatoo</a></li>
-				</ul>
-			</p>
+
+		<div id="getStartedOuter">
+			<div id="getStarted">
+				<h1>Bird distributions</h1>
+				<p>
+					This is a simple tool for exploring bird distributions through the decades.
+					These distributions have been derived from occurrence data accessible in the Atlas.
+					<br/>
+					To use this tool, select a bird group e.g. Doves, and then a bird from the left hand side menu,
+					or click one of the examples below:
+					<ul>
+						<li><a href="javascript:loadByName('Laughing Kookaburra');">Laughing Kookaburra</a></li>
+						<li><a href="javascript:loadByName('Gang-gang Cockatoo');">Gang-gang Cockatoo</a></li>
+						<li><a href="javascript:loadByName('Calyptorhynchus (Zanda) latirostris');">Carnaby's Black-cockatoo</a></li>
+					</ul>
+				</p>
+			</div>
 		</div>
 	</div>
 	<!-- /#page-content-wrapper -->
