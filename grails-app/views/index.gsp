@@ -22,39 +22,28 @@
 	<r:require modules="timeseries"/>
 
 	<style type="text/css">
-		.leaflet-control-command-interior
-		{
-			width: 20px;
-			height: 20px;
-			background-position: 50% 50%;
-			background-repeat: no-repeat;
-			display: block;
-			padding: 3px;
-			border-radius: 4px;
-			-webkit-border-radius: 4px;
-			-moz-border-radius: 4px;
-			box-shadow: 0 1px 7px rgba(0, 0, 0, 0.65);
-			cursor: auto;
-			text-align: center;
-			background-color: #FFFFFF;
+		.taxon-select-control {
+			padding: 10px;
+			background-color: #FCFCFC;
+			/*border: 1px solid black;*/
+			width: auto;
+			/*opacity: 0.7;*/
+			/*filter: alpha(opacity=70);*/
+			background-color:rgba(252,252,252,0.7);
+			/*height: auto;*/
+			margin-left:120px;
+			overflow: scroll;
 		}
-
+		.taxon-select-control h5 {padding-bottom:0px;}
 	</style>
-
 </head>
 
 <body>
 
 <div class="row" style="height:700px;">
 
-	<!-- Sidebar -->
-	<div id="sidebar-wrapper" class="col-md-3 hidden-sm hidden-xs">
-		<h2 class="heading-large" id="main-heading">Bird time series</h2>
-	</div>
-	<!-- /#sidebar-wrapper -->
-
 	<!-- Page Content -->
-	<div id="page-content-wrapperXXX" class="col-md-9">
+	<div id="page-content-wrapperXXX" class="col-md-12">
 
 		<div class="visible-sm visible-xs" style="margin-top: 30px; margin-left: 10px; margin-bottom:20px;">
 			<label>Select bird: </label>
@@ -157,18 +146,41 @@
 			var controlDiv = L.DomUtil.create('div', 'taxon-info-control');
 			L.DomEvent
 					.addListener(controlDiv, 'click', L.DomEvent.stopPropagation)
+					.addListener(controlDiv, 'click', L.DomEvent.preventDefault);
+			return controlDiv;
+		}
+	});
+
+	L.Control.SelectTaxon = L.Control.extend({
+		options: {
+			position: 'bottomleft'
+		},
+		onAdd: function (map) {
+			var controlDiv = L.DomUtil.create('div', 'taxon-select-control');
+			L.DomEvent
+					.addListener(controlDiv, 'click', L.DomEvent.stopPropagation)
 					.addListener(controlDiv, 'click', L.DomEvent.preventDefault)
-					.addListener(controlDiv, 'click', function () { MapShowCommand(); });
+					.addListener(controlDiv, 'dblclick', L.DomEvent.stopPropagation)
+					.addListener(controlDiv, 'dblclick', L.DomEvent.preventDefault)
+					.addListener(controlDiv, 'drag', L.DomEvent.stopPropagation)
+					.addListener(controlDiv, 'drag', L.DomEvent.preventDefault)
+					.addListener(controlDiv, 'zoomstart', L.DomEvent.stopPropagation)
+					.addListener(controlDiv, 'zoomstart', L.DomEvent.preventDefault)
+					.disableScrollPropagation(controlDiv)
+			;
 			return controlDiv;
 		}
 	});
 
 	POLY_TRANS.map.addControl(new L.Control.TaxonInfo());
+	POLY_TRANS.map.addControl(new L.Control.SelectTaxon());
+	//$('.taxon-select-control').append('<h1> Select control </h1>');
+
+
 
 	var taxonInfo = $('#taxonInfoTemplate').clone();
 	taxonInfo.attr('id', 'taxonInfo');
     $('.taxon-info-control').append(taxonInfo);
-
 
 	var taxa = [];
 
@@ -191,7 +203,7 @@
 						nameToDisplay = "<span class='scientificName mainName'>" + taxon.scientificName + "</span>"
 					}
 
-					$group.append('<li><a href="javascript:loadTaxon(' + idx + ');">' + nameToDisplay + '</a></li>');
+					$group.append('<li><a id="'+ idx +'" class="loadTaxon" href="#">' + nameToDisplay + '</a></li>');
 
 					var selectDisplayName = taxon.scientificName;
 					if (taxon.commonName != null) {
@@ -203,15 +215,19 @@
 
 				var $spGroup = $('<div class="speciesGroup">')
 
-				$spGroup.append('<h4><a class="groupSelector" href="#">' + groupName + '</a></h4>');
+				$spGroup.append('<h5><a class="groupSelector" href="#">' + groupName + '</a></h5>');
 				$spGroup.append($group);
-				$('#sidebar-wrapper').append($spGroup);
+				$('.taxon-select-control').append($spGroup);
 				$group.hide();
 			});
 
 			$(".groupSelector").on("click", function () {
 				$(this).parents('div.speciesGroup').find(".species-list").toggle('slow');
 				console.log('displayed ???');
+			});
+
+			$(".loadTaxon").click(function (event) {
+				loadTaxon($(this).attr("id"));
 			});
 		});
 	}

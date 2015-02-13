@@ -26,15 +26,15 @@ html, body {
     overflow: auto;
     /*overflow-scrolling: auto;*/
 }
-.species-list li .mainName { font-size:15px; line-height: 0.8em; }
-.species-list li .secondName { font-size:12px; line-height: 0.8em; }
+.species-list li .mainName { font-size:13px; line-height: 0.8em; }
+.species-list li .secondName { font-size:11px; line-height: 0.8em; }
 
 .species-list li { line-height:20px; }
 
 #main { padding-top: 0px; }
 .quick-search { margin-left:15px; margin-top:15px; margin-bottom: 25px;}
 .scientificName { font-style: italic;}
-.mainName {font-size:15px; }
+.mainName {font-size:13px; }
 
 #taxonInfo .scientificName { margin-top: 5px; }
 #taxonInfo .commonName .mainName { margin-top: 5px; font-size:14px;}
@@ -47,11 +47,24 @@ html, body {
     /*filter: alpha(opacity=70);*/
     background-color:rgba(252,252,252,0.7);
     height: auto;
-    position:absolute;
-    top:14%;
-    right:8%;
-    margin-right:10px;
-    margin-top:10px;
+    /*position:absolute;*/
+    /*top:14%;*/
+    /*right:8%;*/
+    /*margin-right:10px;*/
+    /*margin-top:10px;*/
+}
+
+.taxon-select-control {
+    padding: 10px;
+    background-color: #FCFCFC;
+    /*border: 1px solid black;*/
+    width: auto;
+    /*opacity: 0.7;*/
+    /*filter: alpha(opacity=70);*/
+    background-color:rgba(252,252,252,0.7);
+    height: 570px;
+    margin-left:60px;
+    overflow: auto;
 }
 
 #taxonInfo h2 { font-size: 18px; }
