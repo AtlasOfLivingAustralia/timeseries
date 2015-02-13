@@ -22,7 +22,7 @@
 	<r:require modules="timeseries"/>
 
 	<style type="text/css">
-		.taxon-select-control {
+		.taxon-listing {
 			padding: 10px;
 			background-color: #FCFCFC;
 			/*border: 1px solid black;*/
@@ -31,16 +31,16 @@
 			/*filter: alpha(opacity=70);*/
 			background-color:rgba(252,252,252,0.7);
 			/*height: auto;*/
-			margin-left:120px;
+			/*margin-left:40px;*/
 			overflow: scroll;
 		}
-		.taxon-select-control h5 {padding-bottom:0px;}
+		.taxon-listing h5 {padding-bottom:0px;}
 	</style>
 </head>
 
 <body>
 
-<div class="row" style="height:700px;">
+<div class="row" style="height:720px;">
 
 	<!-- Page Content -->
 	<div id="page-content-wrapperXXX" class="col-md-12">
@@ -53,7 +53,6 @@
 
 		<div>
 			<div id="map" style="width:100%; height:700px;"> </div>
-
 		</div>
 
 		<div id="getStarted">
@@ -153,7 +152,7 @@
 
 	L.Control.SelectTaxon = L.Control.extend({
 		options: {
-			position: 'bottomleft'
+			position: 'topleft'
 		},
 		onAdd: function (map) {
 			var controlDiv = L.DomUtil.create('div', 'taxon-select-control');
@@ -181,6 +180,10 @@
 	var taxonInfo = $('#taxonInfoTemplate').clone();
 	taxonInfo.attr('id', 'taxonInfo');
     $('.taxon-info-control').append(taxonInfo);
+
+
+	$('.taxon-select-control').append('<div class="taxon-listing hidden-xs hidden-sm">');
+
 
 	var taxa = [];
 
@@ -217,7 +220,7 @@
 
 				$spGroup.append('<h5><a class="groupSelector" href="#">' + groupName + '</a></h5>');
 				$spGroup.append($group);
-				$('.taxon-select-control').append($spGroup);
+				$('.taxon-listing').append($spGroup);
 				$group.hide();
 			});
 

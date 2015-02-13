@@ -54,7 +54,7 @@ html, body {
     /*margin-top:10px;*/
 }
 
-.taxon-select-control {
+.taxon-listing {
     padding: 10px;
     background-color: #FCFCFC;
     /*border: 1px solid black;*/
@@ -63,7 +63,7 @@ html, body {
     /*filter: alpha(opacity=70);*/
     background-color:rgba(252,252,252,0.7);
     height: 570px;
-    margin-left:60px;
+    /*margin-left:60px;*/
     overflow: auto;
 }
 
