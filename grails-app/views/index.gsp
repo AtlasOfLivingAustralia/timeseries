@@ -22,39 +22,27 @@
 	<r:require modules="timeseries"/>
 
 	<style type="text/css">
-		.taxon-listing {
-			padding: 10px;
-			background-color: #FCFCFC;
-			/*border: 1px solid black;*/
-			width: auto;
-			/*opacity: 0.7;*/
-			/*filter: alpha(opacity=70);*/
-			background-color:rgba(252,252,252,0.7);
-			/*height: auto;*/
-			/*margin-left:40px;*/
-			overflow: scroll;
-		}
-		.taxon-listing h5 {padding-bottom:0px;}
+		.taxonImageSmall { width: 100px; }
 	</style>
 </head>
 
+
+
 <body>
 
-<div class="row" style="height:720px;">
+<div class="row">
 
 	<!-- Page Content -->
-	<div id="page-content-wrapperXXX" class="col-md-12">
+	<div class="col-md-12">
 
 		<div class="visible-sm visible-xs" style="margin-top: 30px; margin-left: 10px; margin-bottom:20px;">
 			<label>Select bird: </label>
-			<select id="taxon-select" class="form-control">
-			</select>
+			<select id="taxon-select" class="form-control"></select>
 		</div>
 
 		<div>
-			<div id="map" style="width:100%; height:700px;"> </div>
+			<div id="map" style="width:100%; height:720px;"> </div>
 		</div>
-
 
 		<div id="getStartedOuter">
 			<div id="getStarted">
@@ -82,7 +70,8 @@
 	<a class="speciesPageLink" href="">
 		<h2 class="commonName"></h2>
 		<h3 class="scientificName"></h3>
-		<img src=""/>
+		<img class="taxonImage taxonImageLarge  hidden-sm hidden-xs" src=""/>
+		<img class="taxonImage taxonImageSmall  visible-sm visible-xs" src=""/>
 	</a>
 	<br/>
 	<div class="yearTicker">
@@ -281,7 +270,7 @@
 			$('#taxonInfo').removeClass('hide')
 			$('#taxonInfo').find('.scientificName').html(POLY_TRANS.taxon.scientificName);
 			$('#taxonInfo').find('.commonName').html(POLY_TRANS.taxon.commonName);
-			$('#taxonInfo').find('img').attr('src', POLY_TRANS.taxon.image);
+			$('#taxonInfo').find('.taxonImage').attr('src', POLY_TRANS.taxon.image);
 			$('#taxonInfo').find('.speciesPageLink').attr('href', "http://bie.ala.org.au/species/" + POLY_TRANS.taxon.guid);
 
 			startTransitions();
