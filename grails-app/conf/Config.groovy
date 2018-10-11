@@ -23,9 +23,9 @@ println "[${appName}] (*) grails.config.locations = ${grails.config.locations}"
 
 grails.project.groupId = 'au.org.ala' // change this to alter the default package name and Maven publishing destination
 
-bie.baseURL=https://bie.ala.org.au
-bieService.baseURL=https://bie.ala.org.au/ws
-biocacheService.baseURL=https://biocache-ws.ala.org.au/ws
+bie.baseURL = 'https://bie.ala.org.au'
+bieService.baseURL = 'https://bie.ala.org.au/ws'
+biocacheService.baseURL = 'https://biocache-ws.ala.org.au/ws'
 
 // The ACCEPT header will not be used for content negotiation for user agents containing the following strings (defaults to the 4 major rendering engines)
 grails.mime.disable.accept.header.userAgents = ['Gecko', 'WebKit', 'Presto', 'Trident']
