@@ -37,6 +37,6 @@ grails.project.dependency.resolution = {
         }
         build ":tomcat:7.0.55"
         compile ':cache:1.1.8'
-        runtime ":ala-bootstrap3:1.0-SNAPSHOT"
+        runtime ":ala-bootstrap3:1.6"
     }
 }
