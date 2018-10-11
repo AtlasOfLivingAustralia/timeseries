@@ -123,9 +123,9 @@
 
 	L.tileLayer('https://{s}.tiles.mapbox.com/v3/{id}/{z}/{x}/{y}.png', {
 		maxZoom: 18,
-		attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
-		'<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
-		'Imagery © <a href="http://mapbox.com">Mapbox</a>',
+		attribution: 'Map data &copy; <a href="https://openstreetmap.org">OpenStreetMap</a> contributors, ' +
+		'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+		'Imagery © <a href="https://mapbox.com">Mapbox</a>',
 		id: 'examples.map-i875mjb7'
 	}).addTo(POLY_TRANS.map);
 
@@ -271,7 +271,7 @@
 			$('#taxonInfo').find('.scientificName').html(POLY_TRANS.taxon.scientificName);
 			$('#taxonInfo').find('.commonName').html(POLY_TRANS.taxon.commonName);
 			$('#taxonInfo').find('.taxonImage').attr('src', POLY_TRANS.taxon.image);
-			$('#taxonInfo').find('.speciesPageLink').attr('href', "http://bie.ala.org.au/species/" + POLY_TRANS.taxon.guid);
+			$('#taxonInfo').find('.speciesPageLink').attr('href', "${grailsApplication.config.bie.baseURL}/species/" + POLY_TRANS.taxon.guid);
 
 			startTransitions();
 		});

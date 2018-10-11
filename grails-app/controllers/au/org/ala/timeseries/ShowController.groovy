@@ -94,7 +94,7 @@ class ShowController {
         }
 
         def js = new JsonSlurper()
-        def classification = js.parseText(new URL("http://bie.ala.org.au/ws/classification/" + family).getText())
+        def classification = js.parseText(new URL("${grailsApplication.config.bieService.baseURL}/classification/" + family).getText())
         //find the order
         classification.each { node ->
            def lookup = groupLookup.get((node.rank +":" + node.scientificName).toLowerCase())
@@ -108,7 +108,7 @@ class ShowController {
 
     def getGroupLookup(){
         def js = new JsonSlurper()
-        def hierarchy = js.parseText(new URL("http://biocache.ala.org.au/ws/explore/hierarchy").getText())
+        def hierarchy = js.parseText(new URL("${grailsApplication.config.biocacheService.baseURL}/explore/hierarchy").getText())
         def groupLookup = [:]   //   order:MONOTREMATA -> "Monotremes"
         hierarchy.each { speciesGroup ->
             speciesGroup.taxa.each { taxon ->
@@ -129,7 +129,7 @@ class ShowController {
             nameMap.keySet().each { group ->
                 def names = nameMap.get(group)
                 ([names: names] as JSON).toString()
-                def resp = postJsonElements("http://bie.ala.org.au/ws/species/lookup/bulk", ([names: names] as JSON).toString())
+                def resp = postJsonElements("${grailsApplication.config.bieService.baseURL}/species/lookup/bulk", ([names: names] as JSON).toString())
 
                 def content = []
                 //trim it down to required
